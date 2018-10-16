@@ -35,8 +35,8 @@ defmodule Bargad.Merkle do
   end
 
   defp do_build(tree, [{index, value} | []]) do
-    salted_node = index |> Integer.to_string |> Utils.salt_node(value))
-    node = Utils.make_node(tree, Utils.make_hash(tree, salted_node, [], 1, value)
+    salted_node = index |> Integer.to_string |> Utils.salt_node(value)
+    node = Utils.make_node(tree, Utils.make_hash(tree, salted_node), [], 1, value)
     Utils.set_node(tree, node.hash, node)
     node
   end
