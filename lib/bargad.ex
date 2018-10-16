@@ -120,7 +120,7 @@ defmodule Bargad do
   ## it is recommended to use the Superwised LogClient and MapClient.
 
   iex> tree =
-    ...> Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}]) |>
+  ...> Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}]) |>
   ...> Bargad.Log.insert("3") |>
   ...> Bargad.Log.insert("7")
   iex> audit_proof = Bargad.Log.audit_proof(tree, 1)
