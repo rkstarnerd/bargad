@@ -161,7 +161,7 @@ defmodule Bargad.Merkle do
   @spec verify_consistency_proof(Bargad.Types.tree, Bargad.Types.consistency_proof, binary) :: binary
   def verify_consistency_proof(tree, proof, old_root_hash) do
     hash = do_verify_consistency_proof(tree, proof)
-    if (hash == old_root_hash) do
+    if hash == old_root_hash do
       true
     else
       false
