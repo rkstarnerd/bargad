@@ -21,46 +21,48 @@ defmodule Bargad.Log do
     Log mode has support for  generation and verification of Consistency and Audit Proofs.
     """
 
+  alias Bargad.{Merkle, TreeStorage, Utils}
+
     def new(tree_name, hash_function, backend) do
-        tree = Bargad.Merkle.new(:LOG, tree_name, hash_function, backend)
-        Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
+        tree = Merkle.new(:LOG, tree_name, hash_function, backend)
+        TreeStorage.save_tree(tree.treeId, Utils.encode_tree(tree))
         tree
     end
 
     def build(tree_name, hash_function, backend, values) do
-      tree = tree_name |> new(hash_function, backend) |> Bargad.Merkle.build(values)
-        Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
+      tree = tree_name |> new(hash_function, backend) |> Merkle.build(values)
+        TreeStorage.save_tree(tree.treeId, Utils.encode_tree(tree))
         tree
     end
 
     def insert(log, value) do
-        tree = Bargad.Merkle.insert(log, value)
-        Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
+        tree = Merkle.insert(log, value)
+        TreeStorage.save_tree(tree.treeId, Utils.encode_tree(tree))
         tree
     end
 
     def consistency_proof(log, m) do
-        Bargad.Merkle.consistency_proof(log, m)
+        Merkle.consistency_proof(log, m)
     end
 
     def audit_proof(log, m) do
-        Bargad.Merkle.audit_proof(log, m)
+        Merkle.audit_proof(log, m)
     end
 
     def verify_consistency_proof(log, proof, old_root_hash) do
-        Bargad.Merkle.verify_consistency_proof(log, proof, old_root_hash)
+        Merkle.verify_consistency_proof(log, proof, old_root_hash)
     end
 
     def verify_audit_proof(log, proof) do
-        Bargad.Merkle.verify_audit_proof(log, proof)
+        Merkle.verify_audit_proof(log, proof)
     end
 
     def load_log(log_id) do
-        Bargad.TreeStorage.load_tree(log_id)
+        TreeStorage.load_tree(log_id)
     end
 
     def delete_log(log_id) do
-        Bargad.TreeStorage.delete_tree(log_id)
+        TreeStorage.delete_tree(log_id)
     end
 
 end

@@ -13,42 +13,43 @@
 # limitations under the License.
 
 defmodule Bargad.Map do
+  alias Bargad.{Merkle, SparseMerkle, TreeStorage, Utils}
 
     def new(tree_name, hash_function, backend) do
-        tree = Bargad.Merkle.new(:MAP, tree_name, hash_function, backend)
-        Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
+        tree = Merkle.new(:MAP, tree_name, hash_function, backend)
+        TreeStorage.save_tree(tree.treeId, Utils.encode_tree(tree))
         tree
     end
 
     def set(map, key, value) do
-        map = Bargad.SparseMerkle.insert(map, key, value)
-        Bargad.TreeStorage.save_tree(map.treeId, Bargad.Utils.encode_tree(map))
+        map = SparseMerkle.insert(map, key, value)
+        TreeStorage.save_tree(map.treeId, Utils.encode_tree(map))
         map
         # node will store the key hash, the value of the that key will go in metdata for now
         # the map would store the the tree root, total levels, size, each node would store the leaves below it
     end
 
     def get(map, key) do
-        Bargad.SparseMerkle.get_with_inclusion_proof!(map, key)
+        SparseMerkle.get_with_inclusion_proof!(map, key)
         ## ADD CACHING to speed up get process
     end
 
     def verify_inclusion_proof(map, proof) do
-        Bargad.Merkle.verify_audit_proof(map, proof)
+        Merkle.verify_audit_proof(map, proof)
     end
 
     def delete(map, key) do
-        map = Bargad.SparseMerkle.delete!(map, key)
-        Bargad.TreeStorage.save_tree(map.treeId, Bargad.Utils.encode_tree(map))
+        map = SparseMerkle.delete!(map, key)
+        TreeStorage.save_tree(map.treeId, Utils.encode_tree(map))
         map
     end
 
     def load_map(map_id) do
-        Bargad.TreeStorage.load_tree(map_id)
+        TreeStorage.load_tree(map_id)
     end
 
     def delete_map(map_id) do
-        Bargad.TreeStorage.delete_tree(map_id)
+        TreeStorage.delete_tree(map_id)
     end
 
 end

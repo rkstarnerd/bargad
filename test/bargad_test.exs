@@ -17,6 +17,8 @@ defmodule BargadTest do
 
   doctest Bargad
 
+  alias Bargad.{Log, Map, SparseMerkle, Utils}
+
   @empty <<227, 176, 196, 66, 152, 252, 28, 20, 154, 251, 244, 200, 153, 111, 185, 36,
   39, 174, 65, 228, 100, 155, 147, 76, 164, 149, 153, 27, 120, 82, 184, 85>>
 
@@ -79,7 +81,7 @@ defmodule BargadTest do
 
     test "create a new empty tree" do
 
-      tree = Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}])
+      tree = Log.new("FRZ", :sha256, [{"module", "ETSBackend"}])
 
       assert tree.root == @empty
       assert tree.size == 0
@@ -88,7 +90,7 @@ defmodule BargadTest do
 
     test "build a new tree with 1 node" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
 
       assert tree.root == @h1
       assert tree.size == 1
@@ -97,60 +99,60 @@ defmodule BargadTest do
 
     test "build a new tree with 2 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2"])
 
       assert tree.root == @h1_2
       assert tree.size == 2
 
-      root = Bargad.Utils.get_node(tree, tree.root)
+      root = Utils.get_node(tree, tree.root)
       assert root.children == [@h1, @h2]
 
     end
 
     test "build a new tree with 3 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3"])
 
       assert tree.root == @h1_2_3
       assert tree.size == 3
 
-      root = Bargad.Utils.get_node(tree, tree.root)
+      root = Utils.get_node(tree, tree.root)
       assert root.children == [@h1_2, @h3]
 
-      left = Bargad.Utils.get_node(tree, List.first(root.children))
+      left = Utils.get_node(tree, List.first(root.children))
       assert left.children == [@h1, @h2]
 
     end
 
     test "build a new tree with 6 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3","4","5","6"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3","4","5","6"])
 
       assert tree.root == @h1_2_3_4_5_6
       assert tree.size == 6
 
-      root = Bargad.Utils.get_node(tree, tree.root)
+      root = Utils.get_node(tree, tree.root)
       assert root.children == [@h1_2_3_4, @h5_6]
 
-      left = Bargad.Utils.get_node(tree, List.first(root.children))
+      left = Utils.get_node(tree, List.first(root.children))
       assert left.children == [@h1_2, @h3_4]
 
-      right = Bargad.Utils.get_node(tree, List.last(root.children))
+      right = Utils.get_node(tree, List.last(root.children))
       assert right.children == [@h5, @h6]
 
-      left_left = Bargad.Utils.get_node(tree, List.first(left.children))
+      left_left = Utils.get_node(tree, List.first(left.children))
       assert left_left.children == [@h1, @h2]
 
-      left_right = Bargad.Utils.get_node(tree, List.last(left.children))
+      left_right = Utils.get_node(tree, List.last(left.children))
       assert left_right.children == [@h3, @h4]
 
     end
 
     test "insert a new node in an empty tree" do
 
-      tree = Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}])
+      tree = Log.new("FRZ", :sha256, [{"module", "ETSBackend"}])
 
-      tree = Bargad.Log.insert(tree, "1")
+      tree = Log.insert(tree, "1")
 
       assert tree.root == @h1
       assert tree.size == 1
@@ -159,9 +161,9 @@ defmodule BargadTest do
 
     test "insert a node in a tree with 1 node" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
 
-      tree = Bargad.Log.insert(tree, "2")
+      tree = Log.insert(tree, "2")
 
       assert tree.root == @h1_2
       assert tree.size == 2
@@ -170,9 +172,9 @@ defmodule BargadTest do
 
     test "insert a node in a tree with 3 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3"])
 
-      tree = Bargad.Log.insert(tree, "4")
+      tree = Log.insert(tree, "4")
 
       assert tree.root == @h1_2_3_4
       assert tree.size == 4
@@ -181,9 +183,9 @@ defmodule BargadTest do
 
     test "insert a node in a tree with 6 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3","4","5","6"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3","4","5","6"])
 
-      tree = Bargad.Log.insert(tree, "7")
+      tree = Log.insert(tree, "7")
 
       assert tree.root == @h1_2_3_4_5_6_7
       assert tree.size == 7
@@ -196,66 +198,66 @@ defmodule BargadTest do
 
     test "generate audit proof for a tree with 1 node" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
 
-      assert Bargad.Log.audit_proof(tree, 1) == %{proof: [], value: "1", hash: @h1}
+      assert Log.audit_proof(tree, 1) == %{proof: [], value: "1", hash: @h1}
 
     end
 
     test "generate audit proof for a tree with 2 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2"])
 
-      assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}], value: "1", hash: @h1}
+      assert Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}], value: "1", hash: @h1}
 
-      assert Bargad.Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}], value: "2", hash: @h2}
+      assert Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}], value: "2", hash: @h2}
 
     end
 
     test "generate audit proof for a tree with 3 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3"])
 
-      assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3, "R"}], value: "1", hash: @h1}
+      assert Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3, "R"}], value: "1", hash: @h1}
 
-      assert Bargad.Log.verify_audit_proof(tree, Bargad.Log.audit_proof(tree, 1))
+      assert Log.verify_audit_proof(tree, Log.audit_proof(tree, 1))
 
-      assert Bargad.Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}, {@h3, "R"}], value: "2", hash: @h2}
+      assert Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}, {@h3, "R"}], value: "2", hash: @h2}
 
-      assert Bargad.Log.audit_proof(tree, 3) == %{proof: [{@h1_2, "L"}], value: "3", hash: @h3}
+      assert Log.audit_proof(tree, 3) == %{proof: [{@h1_2, "L"}], value: "3", hash: @h3}
 
     end
 
     test "generate audit proof for a tree with 6 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6"])
 
-      assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3_4, "R"}, {@h5_6, "R"}], value: "1", hash: @h1}
+      assert Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3_4, "R"}, {@h5_6, "R"}], value: "1", hash: @h1}
 
-      assert Bargad.Log.audit_proof(tree, 5) == %{proof: [{@h6, "R"},{@h1_2_3_4, "L"}], value: "5", hash: @h5}
+      assert Log.audit_proof(tree, 5) == %{proof: [{@h6, "R"},{@h1_2_3_4, "L"}], value: "5", hash: @h5}
 
     end
 
     test "generate consistency proof for a tree with 8 nodes" do
 
-      tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6", "7", "8"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6", "7", "8"])
 
-      case Bargad.Log.consistency_proof(tree, 3) do
+      case Log.consistency_proof(tree, 3) do
         [@h1_2, @h3] -> assert true
         _ -> assert false
       end
 
-      case Bargad.Log.consistency_proof(tree, 4) do
+      case Log.consistency_proof(tree, 4) do
         [@h1_2_3_4] -> assert true
         _ -> assert false
       end
 
-      case Bargad.Log.consistency_proof(tree, 5) do
+      case Log.consistency_proof(tree, 5) do
         [@h1_2_3_4, @h5] -> assert true
         _ -> assert false
       end
 
-      case Bargad.Log.consistency_proof(tree, 6) do
+      case Log.consistency_proof(tree, 6) do
         [@h1_2_3_4, @h5_6] -> assert true
         _ -> assert false
       end
@@ -263,50 +265,50 @@ defmodule BargadTest do
     end
 
     test "create a new map, insert key value pairs" do
-      map = Bargad.Map.new("map", :sha256, [{"module", "ETSBackend"}])
-             |> Bargad.Map.set(@k1, "1")
-             |> Bargad.Map.set(@k7, "7")
-             |> Bargad.Map.set(@k6, "6")
-             |> Bargad.Map.set(@k2, "2")
+      map = Map.new("map", :sha256, [{"module", "ETSBackend"}])
+             |> Map.set(@k1, "1")
+             |> Map.set(@k7, "7")
+             |> Map.set(@k6, "6")
+             |> Map.set(@k2, "2")
 
-      assert Bargad.SparseMerkle.audit_tree(map) == [{"L", "L", "1"}, {"L", "R", "2"}, {"R", "L", "6"}, {"R", "R", "7"}]
+      assert SparseMerkle.audit_tree(map) == [{"L", "L", "1"}, {"L", "R", "2"}, {"R", "L", "6"}, {"R", "R", "7"}]
     end
 
     test "get with inclusion proof for a map" do
 
-      map = Bargad.Map.new("map", :sha256, [{"module", "ETSBackend"}])
-             |> Bargad.Map.set(@k1, "1")
-             |> Bargad.Map.set(@k7, "7")
-             |> Bargad.Map.set(@k6, "6")
-             |> Bargad.Map.set(@k2, "2")
+      map = Map.new("map", :sha256, [{"module", "ETSBackend"}])
+             |> Map.set(@k1, "1")
+             |> Map.set(@k7, "7")
+             |> Map.set(@k6, "6")
+             |> Map.set(@k2, "2")
 
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))}
+      assert Map.get(map, @k2) == %{key: @k2, proof: [{Utils.make_hash(map, Utils.salt_node(@k1, "1")), "L"}, {Utils.make_hash(map, Utils.make_hash(map, Utils.salt_node(@k6, "6")) <> Utils.make_hash(map, Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Utils.make_hash(map, Utils.salt_node(@k2, "2"))}
     end
 
     test "non-inclusion proof for a map" do
 
-      map = Bargad.Map.new("map", :sha256, [{"module", "ETSBackend"}])
-             |> Bargad.Map.set(@k1, "1")
-             |> Bargad.Map.set(@k7, "7")
-             |> Bargad.Map.set(@k6, "6")
-             |> Bargad.Map.set(@k2, "2")
+      map = Map.new("map", :sha256, [{"module", "ETSBackend"}])
+             |> Map.set(@k1, "1")
+             |> Map.set(@k7, "7")
+             |> Map.set(@k6, "6")
+             |> Map.set(@k2, "2")
 
-      assert Bargad.Map.get(map, @k0) ==
-      [nil, %{key: @k1, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2")), "R"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1"))}]
+      assert Map.get(map, @k0) ==
+      [nil, %{key: @k1, proof: [{Utils.make_hash(map, Utils.salt_node(@k2, "2")), "R"}, {Utils.make_hash(map, Utils.make_hash(map, Utils.salt_node(@k6, "6")) <> Utils.make_hash(map, Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Utils.make_hash(map, Utils.salt_node(@k1, "1"))}]
 
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))}
+      assert Map.get(map, @k2) == %{key: @k2, proof: [{Utils.make_hash(map, Utils.salt_node(@k1, "1")), "L"}, {Utils.make_hash(map, Utils.make_hash(map, Utils.salt_node(@k6, "6")) <> Utils.make_hash(map, Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Utils.make_hash(map, Utils.salt_node(@k2, "2"))}
     end
 
     test "delete values from a map" do
-      map = Bargad.Map.new("map", :sha256, [{"module", "ETSBackend"}])
-             |> Bargad.Map.set(@k1, "1")
-             |> Bargad.Map.set(@k7, "7")
-             |> Bargad.Map.set(@k6, "6")
-             |> Bargad.Map.set(@k2, "2")
+      map = Map.new("map", :sha256, [{"module", "ETSBackend"}])
+             |> Map.set(@k1, "1")
+             |> Map.set(@k7, "7")
+             |> Map.set(@k6, "6")
+             |> Map.set(@k2, "2")
 
-      map = Bargad.Map.delete(map, @k2)
+      map = Map.delete(map, @k2)
 
-      assert Bargad.SparseMerkle.audit_tree(map) == [{"L", "1"}, {"R", "L", "6"}, {"R", "R", "7"}]
+      assert SparseMerkle.audit_tree(map) == [{"L", "1"}, {"R", "L", "6"}, {"R", "R", "7"}]
     end
 
   end

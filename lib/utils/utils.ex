@@ -17,17 +17,19 @@ defmodule Bargad.Utils do
   Utility functions required by `Bargad.Merkle`, `Bargad.Log`, `Bargad.Map`.
   """
 
-  @type tree :: Bargad.Types.tree()
+  alias Bargad.{Nodes, Trees.Tree, Types, Utils}
 
-  @type tree_node :: Bargad.Types.tree_node()
+  @type tree :: Types.tree()
 
-  @type tree_type :: Bargad.Types.tree_type()
+  @type tree_node :: Types.tree_node()
 
-  @type backend :: Bargad.Types.backend()
+  @type tree_type :: Types.tree_type()
 
-  @type hash_algorithm :: Bargad.Types.hash_algorithm()
+  @type backend :: Types.backend()
 
-  @type hash :: Bargad.Types.hash()
+  @type hash_algorithm :: Types.hash_algorithm()
+
+  @type hash :: Types.hash()
 
   @doc """
   Generates a unique TreeId for every tree.
@@ -56,7 +58,7 @@ defmodule Bargad.Utils do
   """
   @spec make_tree(tree_type, binary, hash_algorithm, backend) :: tree
   def make_tree(tree_type, tree_name, hash_function, backend) do
-    Bargad.Trees.Tree.new(
+    Tree.new(
       treeId: generate_tree_id(),
       treeName: tree_name,
       treeType: tree_type,
@@ -87,9 +89,9 @@ defmodule Bargad.Utils do
   """
   def make_node(tree, left, right) do
     # Salting of non leaf nodes is not required
-    Bargad.Utils.make_node(
+    Utils.make_node(
       tree,
-      Bargad.Utils.make_hash(tree, left.hash <> right.hash),
+      Utils.make_hash(tree, left.hash <> right.hash),
       [left.hash, right.hash],
       left.size + right.size,
       nil
@@ -103,7 +105,7 @@ defmodule Bargad.Utils do
       ) do
     Bargad.Nodes.Node.new(
       treeId: tree.treeId,
-      hash: Bargad.Utils.make_hash(tree, left.hash <> right.hash),
+      hash: Utils.make_hash(tree, left.hash <> right.hash),
       children: [left.hash, right.hash],
       size: left.size + right.size,
       key: max(left.key, right.key)
@@ -117,7 +119,7 @@ defmodule Bargad.Utils do
     # This scheme would prevent against preimage attacks as well
     Bargad.Nodes.Node.new(
       treeId: tree.treeId,
-      hash: Bargad.Utils.make_hash(tree, Bargad.Utils.salt_node(key, value)),
+      hash: Utils.make_hash(tree, Utils.salt_node(key, value)),
       children: [],
       size: 1,
       metadata: value,
@@ -164,14 +166,14 @@ defmodule Bargad.Utils do
   Encodes `t:tree/0` into a `binary` using `exprotobuf`.
   """
   def encode_tree(tree) do
-    Bargad.Trees.Tree.encode(tree)
+    Tree.encode(tree)
   end
 
   @doc """
   Decodes a `binary` into a `t:tree/0` using `exprotobuf`.
   """
   def decode_tree(tree) do
-    Bargad.Trees.Tree.decode(tree)
+    Tree.decode(tree)
   end
 
   @doc """
@@ -200,7 +202,7 @@ defmodule Bargad.Utils do
   Utility function to retrieve the backend module from `backend`.
   """
   def get_backend_module(backend) do
-    backend = Bargad.Utils.tuple_list_to_map(backend)
+    backend = Utils.tuple_list_to_map(backend)
     String.to_existing_atom("Elixir." <> backend["module"])
   end
 

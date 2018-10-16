@@ -18,8 +18,10 @@ defmodule ETSBackend do
     """
     @behaviour Storage
 
+  alias Bargad.Utils
+
     @doc """
-    Initializes the `:ets`. 
+    Initializes the `:ets`.
 
     Creates a new table in the form of `treeId_nodes` and stores this information in the `backend` field of the tree.
     """
@@ -34,13 +36,13 @@ defmodule ETSBackend do
     Retrieves a node with the specified key from `:ets`.
     """
     def get_node(backend, key) do
-       backend = Bargad.Utils.tuple_list_to_map(backend)
+       backend = Utils.tuple_list_to_map(backend)
        [{_, value}]  = :ets.lookup(String.to_existing_atom(backend["nodes_table"]), key)
        value
     end
 
     def delete_node(backend, key) do
-        backend = Bargad.Utils.tuple_list_to_map(backend)
+        backend = Utils.tuple_list_to_map(backend)
         :ets.delete(String.to_existing_atom(backend["nodes_table"]), key)
      end
 
@@ -48,7 +50,7 @@ defmodule ETSBackend do
     Persists a node in `:ets` with the specified key, value.
     """
     def set_node(backend, key, value) do
-        backend = Bargad.Utils.tuple_list_to_map(backend)
+        backend = Utils.tuple_list_to_map(backend)
         :ets.insert_new(String.to_existing_atom(backend["nodes_table"]), {key, value})
     end
 

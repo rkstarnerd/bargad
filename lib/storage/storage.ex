@@ -15,9 +15,11 @@
 defmodule Storage do
     @moduledoc """
     Defines a general key-value storage for persisting and retrieval of the Merkle Tree Nodes `t:Bargad.Types.tree_node/0`.
-    The tree nodes can be a part of either `Bargad.Log` or `Bargad.Map`. 
+    The tree nodes can be a part of either `Bargad.Log` or `Bargad.Map`.
     We define a callback that can be implemented by a number of potential backends.
     """
+
+  alias Bargad.Utils
 
     @callback init_backend(term) :: term
     @callback set_node(term,term,term) :: term
@@ -28,7 +30,7 @@ defmodule Storage do
     Persists a node with the specified key, value in the given backend.
     """
     def set_node(backend,key,value) do
-        backend_module = Bargad.Utils.get_backend_module(backend)
+        backend_module = Utils.get_backend_module(backend)
         backend_module.set_node(backend,key,value)
     end
 
@@ -36,7 +38,7 @@ defmodule Storage do
     Retrieves a node with the specified key from the given backend.
     """
     def get_node(backend,key) do
-        backend_module = Bargad.Utils.get_backend_module(backend)
+        backend_module = Utils.get_backend_module(backend)
         backend_module.get_node(backend,key)
     end
 
@@ -44,7 +46,7 @@ defmodule Storage do
     Deletes a node with the specified key from the given backend.
     """
     def delete_node(backend,key) do
-        backend_module = Bargad.Utils.get_backend_module(backend)
+        backend_module = Utils.get_backend_module(backend)
         backend_module.delete_node(backend,key)
     end
 
