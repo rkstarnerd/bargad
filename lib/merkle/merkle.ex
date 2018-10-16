@@ -111,7 +111,7 @@ defmodule Bargad.Merkle do
 
   @spec verify_audit_proof(Bargad.Types.tree, Bargad.Types.audit_proof) :: boolean
   def verify_audit_proof(tree, proof) do
-    if(tree.root == do_verify_audit_proof(proof.hash, proof.proof, tree)) do
+    if tree.root == do_verify_audit_proof(proof.hash, proof.proof, tree) do
       true
     else
       false
