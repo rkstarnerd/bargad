@@ -21,7 +21,7 @@ defmodule Bargad.Merkle do
     tree = Bargad.Utils.make_tree(tree_type, tree_name, hash_function, backend)
     tree = Bargad.Utils.get_backend_module(backend).init_backend(tree)
     # put an empty leaf to make hash not nil (proto def says it's required), make the size zero
-    Map.put(tree, :root, Bargad.Utils.make_hash(tree,<<>>)) |> Map.put(:size, 0)
+    tree |> Map.put(:root, Bargad.Utils.make_hash(tree,<<>>)) |> Map.put(:size, 0)
   end
 
   @spec build(Bargad.Types.tree, Bargad.Types.values) :: Bargad.Types.tree
@@ -29,7 +29,7 @@ defmodule Bargad.Merkle do
     # See this https://elixirforum.com/t/transform-a-list-into-an-map-with-indexes-using-enum-module/1523
     # Doing this to associate each value with it's insertion point.
     data = 1..length(data) |> Enum.zip(data) |> Enum.into([])
-    Map.put(tree, :root, do_build(tree, data).hash) |> Map.put(:size, length(data))
+    tree |> Map.put(:root, do_build(tree, data).hash) |> Map.put(:size, length(data))
   end
 
   defp do_build(tree, [{index, value} | []]) do
@@ -73,13 +73,13 @@ defmodule Bargad.Merkle do
       raise "value not in range"
     else
     root = Bargad.Utils.get_node(tree, tree.root)
-    [{value, hash} | proof] = do_audit_proof(tree, nil, nil, root, m) |> Enum.reverse
+    [{value, hash} | proof] = tree |> do_audit_proof(nil, nil, root, m) |> Enum.reverse
     %{value: value, hash: hash, proof: proof}
     end
   end
 
   defp do_audit_proof(tree, nil, nil, %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
-    l = :math.ceil(:math.log2(size)) |> trunc
+    l = size |> :math.log2() |> :math.ceil() |> trunc
 
     left =  Bargad.Utils.get_node(tree,left)
     right = Bargad.Utils.get_node(tree,right)
@@ -92,7 +92,7 @@ defmodule Bargad.Merkle do
   end
 
   defp do_audit_proof(tree, sibling, direction, %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
-    l = :math.ceil(:math.log2(size)) |> trunc
+    l = size |> :math.log2() |> :math.ceil() |> trunc
 
     left =  Bargad.Utils.get_node(tree,left)
     right = Bargad.Utils.get_node(tree,right)
@@ -124,8 +124,8 @@ defmodule Bargad.Merkle do
 
   defp do_verify_audit_proof(leaf_hash, [{hash, direction} | t], tree) do
     case direction do
-      "L" -> Bargad.Utils.make_hash(tree, hash <> leaf_hash) |> do_verify_audit_proof(t, tree)
-      "R" -> Bargad.Utils.make_hash(tree, leaf_hash <> hash) |> do_verify_audit_proof(t, tree)
+      "L" -> tree |> Bargad.Utils.make_hash(hash <> leaf_hash) |> do_verify_audit_proof(t, tree)
+      "R" -> tree |> Bargad.Utils.make_hash(leaf_hash <> hash) |> do_verify_audit_proof(t, tree)
     end
   end
 
@@ -177,9 +177,10 @@ defmodule Bargad.Merkle do
 
   @spec insert(Bargad.Types.tree, binary) :: Bargad.Types.tree
   def insert(tree = %Bargad.Trees.Tree{size: 0}, x) do
-    node = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, tree.size + 1 |> Integer.to_string |> Bargad.Utils.salt_node(x)), [], 1, x)
+    salted_node = tree.size + 1 |> Integer.to_string |> Bargad.Utils.salt_node(x)
+    node = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, salted_node), [], 1, x)
     Bargad.Utils.set_node(tree, node.hash, node)
-    Map.put(tree, :root, node.hash) |> Map.put(:size, 1)
+    tree |> Map.put(:root, node.hash) |> Map.put(:size, 1)
   end
 
   @spec insert(Bargad.Types.tree, binary) :: Bargad.Types.tree

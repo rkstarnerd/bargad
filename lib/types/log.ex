@@ -29,7 +29,7 @@ defmodule Bargad.Log do
     end
 
     def build(tree_name, hash_function, backend, values) do
-        tree = new(tree_name, hash_function, backend) |> Bargad.Merkle.build(values)
+      tree = tree_name |> new(hash_function, backend) |> Bargad.Merkle.build(values)
         Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
         tree
     end

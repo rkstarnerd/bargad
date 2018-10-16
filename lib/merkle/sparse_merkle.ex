@@ -15,13 +15,13 @@
 defmodule Bargad.SparseMerkle do
 
     use Bitwise
-    
+
     # insertion in empty tree
     @spec insert(Bargad.Types.tree, binary, binary) :: Bargad.Types.tree
     def insert(tree = %Bargad.Trees.Tree{size: 0}, k, v) do
         root = Bargad.Utils.make_map_node(tree, k, v)
         Bargad.Utils.set_node(tree, root.hash, root)
-        Map.put(tree, :root, root.hash) |> Map.put(:size, 1)
+      tree |> Map.put(:root, root.hash) |> Map.put(:size, 1)
     end
 
     # insertion in non empty tree
@@ -34,7 +34,7 @@ defmodule Bargad.SparseMerkle do
         # deletes the existing root from the storage as there would be a new root
         Bargad.Utils.delete_node(tree, root.hash)
         end
-        Map.put(tree, :root, new_root.hash) |> Map.put(:size, size + 1)
+      tree |> Map.put(:root, new_root.hash) |> Map.put(:size, size + 1)
     end
 
 
@@ -245,9 +245,9 @@ defmodule Bargad.SparseMerkle do
         new_root = do_delete(tree, root, k)
         # deletes the existing root from the storage as there would be a new root
         Bargad.Utils.delete_node(tree, root.hash)
-        Map.put(tree, :root, new_root.hash) |> Map.put(:size, size - 1)
+      tree |> Map.put(:root, new_root.hash) |> Map.put(:size, size - 1)
     end
-    
+
     defp do_delete(tree, root = %Bargad.Nodes.Node{children: [left, right]}, k) do
         left = Bargad.Utils.get_node(tree, left)
         right = Bargad.Utils.get_node(tree, right)
@@ -303,7 +303,7 @@ defmodule Bargad.SparseMerkle do
 
     def audit_tree(tree) do
         root = Bargad.Utils.get_node(tree, tree.root)
-        do_audit_tree(tree, root, []) |> List.flatten
+      tree |> do_audit_tree(root, []) |> List.flatten
     end
 
     defp do_audit_tree(tree, %Bargad.Nodes.Node{children: [left, right]}, acc) do
