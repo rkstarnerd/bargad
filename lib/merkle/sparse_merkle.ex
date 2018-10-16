@@ -195,28 +195,19 @@ defmodule Bargad.SparseMerkle do
       l_dist < r_dist ->
         # Going towards left child
         result = do_get_with_inclusion_proof(tree, right, "L", left, k)
-
-        case {result, direction} do
-          # membership proof case
-          {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
-          {[key, :MINRS], "L"} -> [key, min_in_subtree(tree, sibling)]
-          {[:MAXLS, key], "R"} -> [max_in_subtree(sibling), key]
-          _ -> result
-        end
+        do_get({result, direction}, tree, sibling)
 
       l_dist > r_dist ->
         # Going towards right child
         result = do_get_with_inclusion_proof(tree, left, "R", right, k)
-
-        case {result, direction} do
-          # membership proof case
-          {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
-          {[key, :MINRS], "L"} -> [key, min_in_subtree(tree, sibling)]
-          {[:MAXLS, key], "R"} -> [max_in_subtree(sibling), key]
-          _ -> result
-        end
+        do_get({result, direction}, tree, sibling)
     end
   end
+
+  defp do_get({result = [{_, _} | _], direction}, _tree, sibling), do: [{sibling.hash, rev_dir(direction)} | result]
+  defp do_get({[key, :MINRS], "L"}, tree, sibling), do: [key, min_in_subtree(tree, sibling)]
+  defp do_get({[:MAXLS, key], "R"}, _tree, sibling), do: [max_in_subtree(sibling), key]
+  defp do_get({result, _direction}, _tree, _sibling), do: result
 
   defp get_non_inclusion_proof({tree, k, key, direction, sibling}) do
     case [k > key, direction] do
