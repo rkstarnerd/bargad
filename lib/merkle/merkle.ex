@@ -78,7 +78,7 @@ defmodule Bargad.Merkle do
     end
   end
 
-  defp do_audit_proof(tree, nil, nil, root = %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
+  defp do_audit_proof(tree, nil, nil, %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
     l = :math.ceil(:math.log2(size)) |> trunc
 
     left =  Bargad.Utils.get_node(tree,left)
@@ -91,7 +91,7 @@ defmodule Bargad.Merkle do
     end
   end
 
-  defp do_audit_proof(tree, sibling, direction, root = %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
+  defp do_audit_proof(tree, sibling, direction, %Bargad.Nodes.Node{children: [left , right], size: size}, m) do
     l = :math.ceil(:math.log2(size)) |> trunc
 
     left =  Bargad.Utils.get_node(tree,left)
@@ -105,7 +105,7 @@ defmodule Bargad.Merkle do
 
   end
 
-  defp do_audit_proof(_, sibling, direction, leaf = %Bargad.Nodes.Node{hash: salted_hash, children: [], metadata: value}, _) do
+  defp do_audit_proof(_, sibling, direction, %Bargad.Nodes.Node{hash: salted_hash, children: [], metadata: value}, _) do
     [{sibling.hash, direction}, {value, salted_hash}]
   end
 
@@ -193,7 +193,7 @@ defmodule Bargad.Merkle do
     tree |> Map.put(:root, root.hash) |> Map.put(:size, size + 1)
   end
 
-  defp get_new_root(root, tree = %Bargad.Trees.Tree{size: size}, x) do
+  defp get_new_root(root, tree, x) do
     l = root.size |> :math.log2() |> :math.ceil()
 
     if root.size == :math.pow(2,l) do
