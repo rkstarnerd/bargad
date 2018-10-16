@@ -28,7 +28,7 @@ defmodule ETSBackend do
     def init_backend(tree) do
         nodes_table = String.to_atom("nodes" <> "_" <> tree.treeId)
         :ets.new(nodes_table, [:set, :public, :named_table])
-        backend = tree.backend ++ [{"nodes_table",Atom.to_string(nodes_table)}]
+        backend = tree.backend ++ [{"nodes_table", Atom.to_string(nodes_table)}]
         Map.put(tree, :backend, backend)
     end
 

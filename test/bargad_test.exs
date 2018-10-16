@@ -126,7 +126,7 @@ defmodule BargadTest do
 
     test "build a new tree with 6 nodes" do
 
-      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3","4","5","6"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6"])
 
       assert tree.root == @h1_2_3_4_5_6
       assert tree.size == 6
@@ -172,7 +172,7 @@ defmodule BargadTest do
 
     test "insert a node in a tree with 3 nodes" do
 
-      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3"])
 
       tree = Log.insert(tree, "4")
 
@@ -183,7 +183,7 @@ defmodule BargadTest do
 
     test "insert a node in a tree with 6 nodes" do
 
-      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1","2","3","4","5","6"])
+      tree = Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6"])
 
       tree = Log.insert(tree, "7")
 
@@ -234,7 +234,7 @@ defmodule BargadTest do
 
       assert Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3_4, "R"}, {@h5_6, "R"}], value: "1", hash: @h1}
 
-      assert Log.audit_proof(tree, 5) == %{proof: [{@h6, "R"},{@h1_2_3_4, "L"}], value: "5", hash: @h5}
+      assert Log.audit_proof(tree, 5) == %{proof: [{@h6, "R"}, {@h1_2_3_4, "L"}], value: "5", hash: @h5}
 
     end
 

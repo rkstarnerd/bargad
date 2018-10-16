@@ -142,7 +142,7 @@ defmodule Bargad.SparseMerkle do
             # When a key is bounded by two keys in case of non-membership proof
             [key1, key2] ->
                 [get_with_inclusion_proof!(tree, key1),
-                get_with_inclusion_proof!(tree,key2)]
+                get_with_inclusion_proof!(tree, key2)]
         end
     end
 
@@ -199,7 +199,7 @@ defmodule Bargad.SparseMerkle do
                 case {result, direction} do
                     # membership proof case
                     {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
-                    {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)]
+                    {[key, :MINRS], "L"} -> [key, min_in_subtree(tree, sibling)]
                     {[:MAXLS, key], "R"} -> [max_in_subtree(sibling), key]
                     _ -> result
                 end
@@ -211,7 +211,7 @@ defmodule Bargad.SparseMerkle do
                 case {result, direction} do
                     # membership proof case
                     {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
-                    {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)]
+                    {[key, :MINRS], "L"} -> [key, min_in_subtree(tree, sibling)]
                     {[:MAXLS, key], "R"} -> [max_in_subtree(sibling), key]
                     _ -> result
                 end

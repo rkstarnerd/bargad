@@ -17,8 +17,8 @@ defmodule Bargad.Types do
     @type hash_algorithm :: :md5 | :sha | :sha224 | :sha256 | :sha384 | :sha512
     @type tree_type :: :LOG | :MAP
     @type hash :: binary
-    @type backend :: [{binary,binary}, ...]
-    @type values :: [binary,...]
+    @type backend :: [{binary, binary}, ...]
+    @type values :: [binary, ...]
     @type children :: [binary] | []
     @type tree_id :: binary
     @type tree_name :: binary
