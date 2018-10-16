@@ -21,7 +21,7 @@ defmodule Bargad.TreeStorage do
     @doc """
 
     Initializes `:dets` with a table `:tree_table`.
-    
+
     The table is created if it does not exist.
     """
     def initialize() do
@@ -48,5 +48,5 @@ defmodule Bargad.TreeStorage do
     def delete_tree(key) do
         :dets.delete(:tree_table, key)
     end
-    
+
 end

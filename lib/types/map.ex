@@ -51,5 +51,4 @@ defmodule Bargad.Map do
         Bargad.TreeStorage.delete_tree(map_id)
     end
 
-
 end

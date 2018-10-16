@@ -36,7 +36,7 @@ defmodule Bargad do
   - Uses **Protocol Buffers** for efficient serialization and deserialization of data.
   - Very **resilient**, recovers from crashes. Utilizes Erlang OTP constructs.
 
-  Features specific to different modes are given below 
+  Features specific to different modes are given below
 
   #### Verifiable Log
   - Implemented as a **dense** merkle tree, filled from left to right.
@@ -46,7 +46,7 @@ defmodule Bargad do
   - Supports **verfication** of the generated inclusion proof.
 
   #### Verifiable Map
-  - Implemented as a **sparse** merkle tree with support for storing very large amounts of data. 
+  - Implemented as a **sparse** merkle tree with support for storing very large amounts of data.
   - If **SHA256** is used has the hashing algorithm for the underlying merkle tree, the map can support upto **2^256 keys**.
   - Supports generation of **audit/inclusion proofs** for the map.
   - Supports **verfication** of the generated inclusion proof.
@@ -68,10 +68,9 @@ defmodule Bargad do
   | Batch writes                          | No     | Yes      | No                   | No          |
   | Second Preimage attack prevention     | Yes    | Yes      | No                   | No          |
 
-
   ### Roadmap
 
-  -  Add Filters 
+  -  Add Filters
   -  Add signature to tree nodes
   -  Support for batch writes
   -  Support for LevelDB and PostgreSQL
@@ -104,7 +103,7 @@ defmodule Bargad do
   And run:
 
   ```bash
-   $ mix deps.get 
+   $ mix deps.get
   ```
 
   The docs can be found at [https://hexdocs.pm/bargad](https://hexdocs.pm/bargad).
@@ -117,7 +116,7 @@ defmodule Bargad do
 
   ```elixir
   ## Bargad in Verifiable Log mode
-  ## Note that here we are directly using Bargad.Log module for simplicity, 
+  ## Note that here we are directly using Bargad.Log module for simplicity,
   ## it is recommended to use the Superwised LogClient and MapClient.
 
     iex> tree =
@@ -138,14 +137,13 @@ defmodule Bargad do
     }
     iex(3)> Bargad.Log.verify_audit_proof(tree, audit_proof)
     true
-    iex(2)> Bargad.Log.consistency_proof(tree, 1) 
-    [                                                                              
-      <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117, 84, 98, 
-       87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226, 120>>      
+    iex(2)> Bargad.Log.consistency_proof(tree, 1)
+    [
+      <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117, 84, 98,
+       87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226, 120>>
     ]
 
   ```
-
 
   #### Integration Tests
 
@@ -159,7 +157,6 @@ defmodule Bargad do
   3. Commit your changes (`git commit -am 'Add some feature'`)
   4. Push to the branch (`git push origin my-new-feature`)
   5. Create new Pull Request
-
 
   ### Applications
 

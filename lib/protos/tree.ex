@@ -24,7 +24,7 @@ defmodule Bargad.Trees do
         }
 
         enum HashFunction {
-            md5 = 1;  
+            md5 = 1;
             sha = 2;
             sha224 = 3;
             sha256 = 4;

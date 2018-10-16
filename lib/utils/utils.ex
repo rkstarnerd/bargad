@@ -50,7 +50,7 @@ defmodule Bargad.Utils do
   end
 
   @doc """
-  Creates a new tree of type `t:tree/0`. 
+  Creates a new tree of type `t:tree/0`.
 
   Called by `Bargad.Merkle.new/4` when a new `Bargad.Map` or `Bargad.Log` has to be created.
   """
@@ -67,7 +67,7 @@ defmodule Bargad.Utils do
   end
 
   @doc """
-  Creates a new node in the tree of type `t:tree_node/0`. 
+  Creates a new node in the tree of type `t:tree_node/0`.
   """
 
   def make_node(tree, hash, children, size, metadata) do
@@ -81,7 +81,7 @@ defmodule Bargad.Utils do
   end
 
   @doc """
-  Creates an inner node  in the tree of type `t:tree_node/0`. 
+  Creates an inner node  in the tree of type `t:tree_node/0`.
 
   Creates a new node with its children as `left` and `right`.
   """
@@ -113,7 +113,7 @@ defmodule Bargad.Utils do
   def make_map_node(tree, key, value) do
     # salt the node with the key to prevent storage collisions
     # eg. if two keys have the same values, their hashes would be the same and as the nodes are being
-    # indexed by their keys, storage would collide. 
+    # indexed by their keys, storage would collide.
     # This scheme would prevent against preimage attacks as well
     Bargad.Nodes.Node.new(
       treeId: tree.treeId,
@@ -130,7 +130,7 @@ defmodule Bargad.Utils do
   end
 
   @doc """
-  Hashes the binary data supplied based on the hash algorithm `t:hash_algorithm/0` specified in `t:tree`. 
+  Hashes the binary data supplied based on the hash algorithm `t:hash_algorithm/0` specified in `t:tree`.
   """
   def make_hash(tree, data) do
     :crypto.hash(tree.hashFunction, data)

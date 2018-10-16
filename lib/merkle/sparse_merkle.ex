@@ -37,7 +37,6 @@ defmodule Bargad.SparseMerkle do
       tree |> Map.put(:root, new_root.hash) |> Map.put(:size, size + 1)
     end
 
-
     defp do_insert(tree, root = %Bargad.Nodes.Node{children: [left, right]}, k, v) do
         left = Bargad.Utils.get_node(tree, left)
         right = Bargad.Utils.get_node(tree, right)
@@ -82,7 +81,7 @@ defmodule Bargad.SparseMerkle do
                 new_root = Bargad.Utils.make_map_node(tree, left, right)
                 Bargad.Utils.set_node(tree, new_root.hash, new_root)
                 new_root
-                
+
             l_dist > r_dist ->
                 # Going towards right child
                 right = do_insert(tree, right, k, v)
@@ -94,14 +93,13 @@ defmodule Bargad.SparseMerkle do
         end
     end
 
-
     defp do_insert(tree, leaf = %Bargad.Nodes.Node{children: [], metadata: _, key: key}, k, v) do
         new_leaf = Bargad.Utils.make_map_node(tree, k, v)
         Bargad.Utils.set_node(tree, new_leaf.hash, new_leaf)
 
         # reached leaf node level
 
-        # after reaching the level where the new key is to inserted, 
+        # after reaching the level where the new key is to inserted,
         # make a new node comprising of the existing key and new one
         # if the new leaf is bigger than the existing one, make the new one as the right child of resulting node
         cond do
@@ -129,7 +127,7 @@ defmodule Bargad.SparseMerkle do
 
         case result do
             # membership proof case
-            [{_, _} | _] -> 
+            [{_, _} | _] ->
                 [{value, hash} | proof] = Enum.reverse(result)
                 %{key: k, value: value, hash: hash, proof: proof}
 
@@ -138,9 +136,9 @@ defmodule Bargad.SparseMerkle do
 
             # Edge Case 2 for non-membership proof
             [:MAXLS, key] -> [nil, get_with_inclusion_proof!(tree, key)]
-    
+
             # When a key is bounded by two keys in case of non-membership proof
-            [key1, key2] -> 
+            [key1, key2] ->
                 [get_with_inclusion_proof!(tree, key1),
                 get_with_inclusion_proof!(tree,key2)]
         end
@@ -211,7 +209,7 @@ defmodule Bargad.SparseMerkle do
                 case {result, direction} do
                     # membership proof case
                     {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
-                    {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)] 
+                    {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)]
                     {[:MAXLS, key], "R"} -> [max_in_subtree(sibling), key]
                     _ -> result
                 end
@@ -322,7 +320,7 @@ defmodule Bargad.SparseMerkle do
         x = x |> Base.encode16 |> Integer.parse(16) |> elem(0)
         y = y |> Base.encode16 |> Integer.parse(16) |> elem(0)
 
-        result = bxor(x, y) 
+        result = bxor(x, y)
 
         # xor with the same results in a zero, this check is done for when a person tries to insert an existing key
         # xor becomes 0, for which log is undefined so we return a negative value to indicated that it is the minimum distance
@@ -342,6 +340,5 @@ defmodule Bargad.SparseMerkle do
             _ -> "L"
         end
     end
-
 
 end

@@ -22,16 +22,16 @@ defmodule Bargad.MapClient do
     """
 
     use GenServer
-  
+
     ## Client API
 
-    @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | boolean 
-  
+    @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | boolean
+
     @type request :: tuple
 
     @doc """
     Starts the `Bargad.MapClient`.
-    
+
     Provides an API layer for operations on `Bargad.Map`.
     """
     def start_link(opts) do
@@ -55,19 +55,18 @@ defmodule Bargad.MapClient do
         GenServer.call(Bargad.MapClient, {:verify_inclusion_proof, args})
     end
 
-   
     ## Server Callbacks
-  
+
     @doc false
     def init(:ok) do
       {:ok, %{}}
     end
-  
+
     @doc false
     def handle_call({operation, args}, _from, state) do
         args = Tuple.to_list(args)
         result = apply(Bargad.Map, operation, args)
         {:reply, result, state}
     end
-    
+
 end

@@ -30,5 +30,5 @@ defmodule Bargad.Nodes do
     """
     @doc false
     @external_resource Path.expand("./node.proto", __DIR__)
-    use Protobuf, from: Path.expand("./node.proto", __DIR__)   
+    use Protobuf, from: Path.expand("./node.proto", __DIR__)
 end

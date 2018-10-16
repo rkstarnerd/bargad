@@ -21,7 +21,6 @@ defmodule Bargad.Log do
     Log mode has support for  generation and verification of Consistency and Audit Proofs.
     """
 
-    
     def new(tree_name, hash_function, backend) do
         tree = Bargad.Merkle.new(:LOG, tree_name, hash_function, backend)
         Bargad.TreeStorage.save_tree(tree.treeId, Bargad.Utils.encode_tree(tree))
@@ -64,6 +63,4 @@ defmodule Bargad.Log do
         Bargad.TreeStorage.delete_tree(log_id)
     end
 
-
-    
 end

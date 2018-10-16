@@ -163,7 +163,8 @@ defmodule Bargad.Merkle do
     hash = do_verify_consistency_proof(tree, proof)
     if (hash == old_root_hash) do
       true
-    else false
+    else
+      false
     end
   end
 
@@ -229,15 +230,16 @@ defmodule Bargad.Merkle do
   defp do_insert(tree, parent, left = %Bargad.Nodes.Node{children: []}, _, _, "L")  do
     right = Bargad.Utils.get_node(tree, List.last(parent.children))
     node = Bargad.Utils.make_node(tree, left, right)
-    Bargad.Utils.set_node(tree,node.hash,node)
+    Bargad.Utils.set_node(tree, node.hash, node)
     node
   end
 
   defp do_insert(tree, _, left, x, _, "R")  do
-    right = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, tree.size + 1 |> Integer.to_string |> Bargad.Utils.salt_node(x)), [], 1, x)
-    Bargad.Utils.set_node(tree,right.hash,right)
+    salted_node = tree.size + 1 |> Integer.to_string |> Bargad.Utils.salt_node(x)
+    right = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, salted_node), [], 1, x)
+    Bargad.Utils.set_node(tree, right.hash, right)
     node = Bargad.Utils.make_node(tree, left, right)
-    Bargad.Utils.set_node(tree,node.hash,node)
+    Bargad.Utils.set_node(tree, node.hash, node)
     node
   end
 end

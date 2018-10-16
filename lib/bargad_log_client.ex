@@ -21,16 +21,16 @@ defmodule Bargad.LogClient do
     """
 
     use GenServer
-  
+
     ## Client API
 
-    @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | Bargad.Types.consistency_proof | boolean 
-  
+    @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | Bargad.Types.consistency_proof | boolean
+
     @type request :: tuple
 
     @doc """
     Starts the `Bargad.LogClient`.
-    
+
     Provides an API layer for operations on `Bargad.Log`.
     """
     def start_link(opts) do
@@ -56,7 +56,6 @@ defmodule Bargad.LogClient do
     def build(args) do
         GenServer.call(Bargad.LogClient, {:build, args})
     end
-
 
     @doc """
     Appends a new value into the `Log`.
@@ -107,20 +106,19 @@ defmodule Bargad.LogClient do
     def verify_audit_proof(args) do
         GenServer.call(Bargad.LogClient, {:verify_audit_proof, args})
     end
-  
+
     ## Server Callbacks
-  
+
     @doc false
     def init(:ok) do
       {:ok, %{}}
     end
-  
+
     @doc false
     def handle_call({operation, args}, _from, state) do
         args = Tuple.to_list(args)
         result = apply(Bargad.Log, operation, args)
         {:reply, result, state}
     end
-  
+
   end
-  

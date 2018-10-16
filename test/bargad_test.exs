@@ -17,31 +17,29 @@ defmodule BargadTest do
 
   doctest Bargad
 
-
-  
   @empty <<227, 176, 196, 66, 152, 252, 28, 20, 154, 251, 244, 200, 153, 111, 185, 36,
   39, 174, 65, 228, 100, 155, 147, 76, 164, 149, 153, 27, 120, 82, 184, 85>>
 
-  ## Hashes h1 to h7 i.e leaf node hashes are salted by their insertion point, 
+  ## Hashes h1 to h7 i.e leaf node hashes are salted by their insertion point,
   ## here it is assumed that 1 was inserted first, 2 was second etc.
   ## So h1 contains that hash for "1" <> "1" and so on.
 
-  @h1 <<79, 200, 43, 38, 174, 203, 71, 210, 134, 140, 78, 251, 227, 88, 23, 50, 163, 231, 203, 204, 
+  @h1 <<79, 200, 43, 38, 174, 203, 71, 210, 134, 140, 78, 251, 227, 88, 23, 50, 163, 231, 203, 204,
   108, 46, 251, 50, 6, 44, 8, 23, 10, 5, 238, 184>>
 
   @h2 <<120, 95, 62, 199, 235, 50, 243, 11, 144, 205, 15, 207, 54, 87, 211, 136, 181, 255, 66, 151,
   242, 249, 113, 111, 246, 110, 155, 105, 192, 93, 221, 9>>
- 
-  @h3 <<198, 243, 172, 87, 148, 74, 83, 20, 144, 205, 57, 144, 45, 15, 119, 119, 21, 253, 0, 94, 250, 
+
+  @h3 <<198, 243, 172, 87, 148, 74, 83, 20, 144, 205, 57, 144, 45, 15, 119, 119, 21, 253, 0, 94, 250,
   201, 163, 6, 34, 213, 245, 32, 94, 127, 104, 148>>
 
-  @h4 <<113, 238, 69, 163, 192, 219, 154, 152, 101, 247, 49, 61, 211, 55, 44, 246, 13, 202, 100, 121, 
+  @h4 <<113, 238, 69, 163, 192, 219, 154, 152, 101, 247, 49, 61, 211, 55, 44, 246, 13, 202, 100, 121,
   212, 98, 97, 243, 84, 46, 185, 52, 110, 74, 4, 214>>
 
-  @h5 <<2, 210, 11, 189, 126, 57, 74, 213, 153, 154, 76, 235, 171, 172, 150, 25, 115, 44, 52, 58, 76, 
+  @h5 <<2, 210, 11, 189, 126, 57, 74, 213, 153, 154, 76, 235, 171, 172, 150, 25, 115, 44, 52, 58, 76,
   172, 153, 71, 12, 3, 226, 59, 162, 189, 194, 188>>
 
-  @h6 <<58, 218, 146, 242, 139, 76, 237, 163, 133, 98, 235, 240, 71, 198, 255, 5, 64, 13, 76, 87, 35, 
+  @h6 <<58, 218, 146, 242, 139, 76, 237, 163, 133, 98, 235, 240, 71, 198, 255, 5, 64, 13, 76, 87, 35,
   82, 161, 20, 46, 237, 254, 246, 125, 33, 230, 98>>
 
   @h1_2 <<174, 86, 139, 96, 80, 100, 130, 199, 152, 102, 211, 202, 127, 141, 229, 228,
@@ -72,18 +70,17 @@ defmodule BargadTest do
   @k2 <<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2>>
 
   @k6 <<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6>>
-  
+
   @k7 <<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7>>
-  
-  
-  # create a random log with ets 
+
+  # create a random log with ets
 
   describe "log mutations" do
 
     test "create a new empty tree" do
 
       tree = Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}])
-      
+
       assert tree.root == @empty
       assert tree.size == 0
 
@@ -95,7 +92,7 @@ defmodule BargadTest do
 
       assert tree.root == @h1
       assert tree.size == 1
-      
+
     end
 
     test "build a new tree with 2 nodes" do
@@ -107,7 +104,7 @@ defmodule BargadTest do
 
       root = Bargad.Utils.get_node(tree, tree.root)
       assert root.children == [@h1, @h2]
-      
+
     end
 
     test "build a new tree with 3 nodes" do
@@ -122,7 +119,7 @@ defmodule BargadTest do
 
       left = Bargad.Utils.get_node(tree, List.first(root.children))
       assert left.children == [@h1, @h2]
-      
+
     end
 
     test "build a new tree with 6 nodes" do
@@ -143,7 +140,7 @@ defmodule BargadTest do
 
       left_left = Bargad.Utils.get_node(tree, List.first(left.children))
       assert left_left.children == [@h1, @h2]
-      
+
       left_right = Bargad.Utils.get_node(tree, List.last(left.children))
       assert left_right.children == [@h3, @h4]
 
@@ -157,7 +154,7 @@ defmodule BargadTest do
 
       assert tree.root == @h1
       assert tree.size == 1
-      
+
     end
 
     test "insert a node in a tree with 1 node" do
@@ -168,7 +165,7 @@ defmodule BargadTest do
 
       assert tree.root == @h1_2
       assert tree.size == 2
-      
+
     end
 
     test "insert a node in a tree with 3 nodes" do
@@ -179,7 +176,7 @@ defmodule BargadTest do
 
       assert tree.root == @h1_2_3_4
       assert tree.size == 4
-      
+
     end
 
     test "insert a node in a tree with 6 nodes" do
@@ -190,13 +187,13 @@ defmodule BargadTest do
 
       assert tree.root == @h1_2_3_4_5_6_7
       assert tree.size == 7
-      
+
     end
 
   end
 
   describe "tree get operations" do
-    
+
     test "generate audit proof for a tree with 1 node" do
 
       tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1"])
@@ -212,7 +209,7 @@ defmodule BargadTest do
       assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}], value: "1", hash: @h1}
 
       assert Bargad.Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}], value: "2", hash: @h2}
-      
+
     end
 
     test "generate audit proof for a tree with 3 nodes" do
@@ -222,25 +219,25 @@ defmodule BargadTest do
       assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3, "R"}], value: "1", hash: @h1}
 
       assert Bargad.Log.verify_audit_proof(tree, Bargad.Log.audit_proof(tree, 1))
-      
+
       assert Bargad.Log.audit_proof(tree, 2) == %{proof: [{@h1, "L"}, {@h3, "R"}], value: "2", hash: @h2}
 
       assert Bargad.Log.audit_proof(tree, 3) == %{proof: [{@h1_2, "L"}], value: "3", hash: @h3}
-      
+
     end
 
     test "generate audit proof for a tree with 6 nodes" do
-      
+
       tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6"])
 
       assert Bargad.Log.audit_proof(tree, 1) == %{proof: [{@h2, "R"}, {@h3_4, "R"}, {@h5_6, "R"}], value: "1", hash: @h1}
 
       assert Bargad.Log.audit_proof(tree, 5) == %{proof: [{@h6, "R"},{@h1_2_3_4, "L"}], value: "5", hash: @h5}
-      
+
     end
-    
+
     test "generate consistency proof for a tree with 8 nodes" do
-      
+
       tree = Bargad.Log.build("FRZ", :sha256, [{"module", "ETSBackend"}], ["1", "2", "3", "4", "5", "6", "7", "8"])
 
       case Bargad.Log.consistency_proof(tree, 3) do
@@ -262,7 +259,7 @@ defmodule BargadTest do
         [@h1_2_3_4, @h5_6] -> assert true
         _ -> assert false
       end
-      
+
     end
 
     test "create a new map, insert key value pairs" do
@@ -282,8 +279,8 @@ defmodule BargadTest do
              |> Bargad.Map.set(@k7, "7")
              |> Bargad.Map.set(@k6, "6")
              |> Bargad.Map.set(@k2, "2")
-             
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
+
+      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))}
     end
 
     test "non-inclusion proof for a map" do
@@ -293,15 +290,12 @@ defmodule BargadTest do
              |> Bargad.Map.set(@k7, "7")
              |> Bargad.Map.set(@k6, "6")
              |> Bargad.Map.set(@k2, "2")
-      
-          
-      assert Bargad.Map.get(map, @k0) == 
-      [nil, %{key: @k1, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2")), "R"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1"))}]
-             
-      
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
-    end
 
+      assert Bargad.Map.get(map, @k0) ==
+      [nil, %{key: @k1, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2")), "R"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1"))}]
+
+      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))}
+    end
 
     test "delete values from a map" do
       map = Bargad.Map.new("map", :sha256, [{"module", "ETSBackend"}])
@@ -312,11 +306,9 @@ defmodule BargadTest do
 
       map = Bargad.Map.delete(map, @k2)
 
-      assert Bargad.SparseMerkle.audit_tree(map) == [{"L", "1"}, {"R", "L", "6"}, {"R", "R", "7"}] 
+      assert Bargad.SparseMerkle.audit_tree(map) == [{"L", "1"}, {"R", "L", "6"}, {"R", "R", "7"}]
     end
 
-
   end
-
 
 end
