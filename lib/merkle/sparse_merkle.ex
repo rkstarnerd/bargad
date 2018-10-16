@@ -169,7 +169,7 @@ defmodule Bargad.SparseMerkle do
         end
     end
 
-    defp do_get_with_inclusion_proof(tree, sibling, direction, leaf = %Bargad.Nodes.Node{hash: salted_hash, children: [], metadata: value, key: key}, k) do
+    defp do_get_with_inclusion_proof(tree, sibling, direction, %Bargad.Nodes.Node{hash: salted_hash, children: [], metadata: value, key: key}, k) do
         if key == k do
             [{sibling.hash, rev_dir(direction)}, {value, salted_hash} ]
         else
@@ -289,7 +289,7 @@ defmodule Bargad.SparseMerkle do
     end
 
     ## Check if this would ever be called, if not then remove it.
-    defp do_delete(_, leaf = %Bargad.Nodes.Node{children: [], key: key}, k) do
+    defp do_delete(_, %Bargad.Nodes.Node{children: [], key: key}, k) do
         if key == k do
             IO.puts "found a key here"
         else
@@ -306,7 +306,7 @@ defmodule Bargad.SparseMerkle do
         do_audit_tree(tree, root, []) |> List.flatten
     end
 
-    defp do_audit_tree(tree, root = %Bargad.Nodes.Node{children: [left, right]}, acc) do
+    defp do_audit_tree(tree, %Bargad.Nodes.Node{children: [left, right]}, acc) do
         left = Bargad.Utils.get_node(tree, left)
         right = Bargad.Utils.get_node(tree, right)
 
@@ -314,7 +314,7 @@ defmodule Bargad.SparseMerkle do
         [do_audit_tree(tree, right, ["R" | acc])]
     end
 
-    defp do_audit_tree(_, leaf = %Bargad.Nodes.Node{children: [], metadata: m}, acc) do
+    defp do_audit_tree(_, %Bargad.Nodes.Node{children: [], metadata: m}, acc) do
         [m | acc] |> Enum.reverse |> List.to_tuple
     end
 
