@@ -283,7 +283,7 @@ defmodule BargadTest do
              |> Bargad.Map.set(@k6, "6")
              |> Bargad.Map.set(@k2, "2")
              
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, { Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
+      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
     end
 
     test "non-inclusion proof for a map" do
@@ -296,10 +296,10 @@ defmodule BargadTest do
       
           
       assert Bargad.Map.get(map, @k0) == 
-      [ nil, %{key: @k1, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2")), "R"}, { Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1"))}]
+      [nil, %{key: @k1, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2")), "R"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "1", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1"))}]
              
       
-      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, { Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
+      assert Bargad.Map.get(map, @k2) == %{key: @k2, proof: [{Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k1, "1")), "L"}, {Bargad.Utils.make_hash(map, Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k6, "6")) <> Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k7, "7"))) , "R"}], value: "2", hash: Bargad.Utils.make_hash(map, Bargad.Utils.salt_node(@k2, "2"))} 
     end
 
 

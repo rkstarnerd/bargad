@@ -196,7 +196,7 @@ defmodule Bargad.SparseMerkle do
                 # Going towards left child
                 result = do_get_with_inclusion_proof(tree, right, "L", left, k)
 
-                case { result, direction } do
+                case {result, direction} do
                     # membership proof case
                     {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
                     {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)]
@@ -208,7 +208,7 @@ defmodule Bargad.SparseMerkle do
                 # Going towards right child
                 result = do_get_with_inclusion_proof(tree, left, "R", right, k)
 
-                case { result, direction } do
+                case {result, direction} do
                     # membership proof case
                     {[{_, _} | _], _} -> [{sibling.hash, rev_dir(direction)} | result]
                     {[key, :MINRS],"L"} -> [key, min_in_subtree(tree, sibling)] 

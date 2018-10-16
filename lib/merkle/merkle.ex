@@ -13,7 +13,7 @@
 # limitations under the License.
 
 defmodule Bargad.Merkle do
-  
+
   use Bitwise
 
   @spec new(Bargad.Types.tree_type, binary, Bargad.Types.hash_algorithm, Bargad.Types.backend) :: Bargad.Types.tree
@@ -32,7 +32,7 @@ defmodule Bargad.Merkle do
     Map.put(tree, :root, do_build(tree, data).hash) |> Map.put(:size, length(data))
   end
 
-  defp do_build(tree, [ {index, value} | []]) do
+  defp do_build(tree, [{index, value} | []]) do
     node = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, index |> Integer.to_string |> Bargad.Utils.salt_node(value)), [], 1, value)
     Bargad.Utils.set_node(tree,node.hash,node)
     node
@@ -73,7 +73,7 @@ defmodule Bargad.Merkle do
       raise "value not in range"
     else
     root = Bargad.Utils.get_node(tree, tree.root)
-    [ {value, hash} | proof] = do_audit_proof(tree, nil, nil, root, m) |> Enum.reverse
+    [{value, hash} | proof] = do_audit_proof(tree, nil, nil, root, m) |> Enum.reverse
     %{value: value, hash: hash, proof: proof}
     end
   end
@@ -84,10 +84,10 @@ defmodule Bargad.Merkle do
     left =  Bargad.Utils.get_node(tree,left)
     right = Bargad.Utils.get_node(tree,right)
 
-    if m <= (1 <<< (l-1)) do
+    if m <= (1 <<< (l - 1)) do
       do_audit_proof(tree, right, "R", left, m)
     else
-      do_audit_proof(tree, left, "L", right, m - (1 <<< (l-1)))
+      do_audit_proof(tree, left, "L", right, m - (1 <<< (l - 1)))
     end
   end
 
@@ -97,10 +97,10 @@ defmodule Bargad.Merkle do
     left =  Bargad.Utils.get_node(tree,left)
     right = Bargad.Utils.get_node(tree,right)
 
-    if m <= (1 <<< (l-1)) do
+    if m <= (1 <<< (l - 1)) do
       [{sibling.hash, direction} | do_audit_proof(tree, right, "R", left, m)]
     else
-      [{sibling.hash, direction} | do_audit_proof(tree, left, "L", right, m - (1 <<< (l-1)))]
+      [{sibling.hash, direction} | do_audit_proof(tree, left, "L", right, m - (1 <<< (l - 1)))]
     end
 
   end
@@ -111,9 +111,9 @@ defmodule Bargad.Merkle do
 
   @spec verify_audit_proof(Bargad.Types.tree, Bargad.Types.audit_proof) :: boolean
   def verify_audit_proof(tree, proof) do
-    if( tree.root == do_verify_audit_proof(proof.hash, proof.proof, tree)) do
+    if(tree.root == do_verify_audit_proof(proof.hash, proof.proof, tree)) do
       true
-    else 
+    else
       false
     end
   end
@@ -135,16 +135,16 @@ defmodule Bargad.Merkle do
     l = :math.ceil(:math.log2(root.size))
     t = trunc(:math.log2(m))
     do_consistency_proof(tree, nil, root, {l, t, m, root.size})
-  end 
+  end
 
-  defp do_consistency_proof(tree, sibling, %Bargad.Nodes.Node{hash: hash}, {l, t, m, _}) when l==t do
+  defp do_consistency_proof(tree, sibling, %Bargad.Nodes.Node{hash: hash}, {l, t, m, _}) when l == t do
     size = trunc(:math.pow(2,l))
     m = m - trunc(:math.pow(2,l))
     case m do
       0 -> [hash]
       _ -> l = :math.ceil(:math.log2(size))
       t = trunc(:math.log2(m))
-      [ hash | do_consistency_proof(tree, nil, sibling, {l, t, m, size})]
+      [hash | do_consistency_proof(tree, nil, sibling, {l, t, m, size})]
     end
   end
 
@@ -152,10 +152,10 @@ defmodule Bargad.Merkle do
     [hash]
   end
 
-  defp do_consistency_proof(tree, _, %Bargad.Nodes.Node{children: [left , right]}, {l, t, m, size}) do 
+  defp do_consistency_proof(tree, _, %Bargad.Nodes.Node{children: [left , right]}, {l, t, m, size}) do
     left = Bargad.Utils.get_node(tree,left)
     right = Bargad.Utils.get_node(tree,right)
-    do_consistency_proof(tree, right, left, {l-1, t, m, size})
+    do_consistency_proof(tree, right, left, {l - 1, t, m, size})
   end
 
   @spec verify_consistency_proof(Bargad.Types.tree, Bargad.Types.consistency_proof, binary) :: binary
@@ -168,7 +168,7 @@ defmodule Bargad.Merkle do
   end
 
   defp do_verify_consistency_proof(tree, [first, second]) do
-    Bargad.Utils.make_hash(tree, first<>second)
+    Bargad.Utils.make_hash(tree, first <> second)
   end
 
   defp do_verify_consistency_proof(tree, [head | tail]) do
@@ -196,7 +196,7 @@ defmodule Bargad.Merkle do
   defp get_new_root(root, tree, x) do
     l = root.size |> :math.log2() |> :math.ceil()
 
-    if root.size == :math.pow(2,l) do
+    if root.size == :math.pow(2, l) do
       salted_node = tree.size + 1 |> Integer.to_string() |> Bargad.Utils.salt_node(x)
       right = Bargad.Utils.make_node(tree, Bargad.Utils.make_hash(tree, salted_node), [], 1, x)
       Bargad.Utils.set_node(tree, right.hash, right)
@@ -207,7 +207,7 @@ defmodule Bargad.Merkle do
       [left, right] = root.children
       left = Bargad.Utils.get_node(tree, left)
       right = Bargad.Utils.get_node(tree, right)
-      boolean = left.size < :math.pow(2,l-1)
+      boolean = left.size < :math.pow(2, l - 1)
       {left, right} = get_left_and_right_nodes(boolean, tree, root, left, right, x, l)
 
       Bargad.Utils.delete_node(tree, root.hash)
@@ -216,12 +216,12 @@ defmodule Bargad.Merkle do
   end
 
   defp get_left_and_right_nodes(true, tree, root, left, right, x, l) do
-    left = do_insert(tree, root, left, x, l-1,"L")
+    left = do_insert(tree, root, left, x, l - 1, "L")
     {left, right}
   end
 
   defp get_left_and_right_nodes(false, tree, root, left, right, x, l) do
-    right = do_insert(tree, root, right, x, l-1,"R")
+    right = do_insert(tree, root, right, x, l - 1, "R")
     {left, right}
   end
 
