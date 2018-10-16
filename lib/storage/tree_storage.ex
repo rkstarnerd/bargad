@@ -24,7 +24,7 @@ defmodule Bargad.TreeStorage do
 
     The table is created if it does not exist.
     """
-    def initialize() do
+    def initialize do
         :dets.open_file(:tree_table, [type: :set])
     end
 

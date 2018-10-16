@@ -34,7 +34,7 @@ defmodule Bargad.Utils do
 
   This TreeId is used by `Storage` and `Bargad.TreeStorage` for persisting `t:tree/0` and `t:tree_node/0`
   """
-  def generate_tree_id() do
+  def generate_tree_id do
     UUID.uuid4(:hex)
     # :rand.uniform(100000)
   end
