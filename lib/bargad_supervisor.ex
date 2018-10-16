@@ -27,8 +27,8 @@ defmodule Bargad.Supervisor do
   alias Bargad.{LogClient, MapClient, TreeStorage}
 
   @doc """
-    Initializes the `:dets` storage `Bargad.TreeStorage` which stores multiple tree heads.
-    Starts the supervision tree.
+  Initializes the `:dets` storage `Bargad.TreeStorage` which stores multiple tree heads.
+  Starts the supervision tree.
   """
   @spec start_link() :: Supervisor.on_start()
   def start_link do

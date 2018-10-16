@@ -87,7 +87,7 @@ defmodule Bargad do
   ```elixir
   defp deps do
   [
-    {:bargad, "~> 1.0.0"}
+  {:bargad, "~> 1.0.0"}
   ]
   end
   ```
@@ -95,7 +95,7 @@ defmodule Bargad do
   ```elixir
   def application do
   [
-    extra_applications : [ :bargad, ....]
+  extra_applications : [ :bargad, ....]
   ]
   end
   ```
@@ -103,7 +103,7 @@ defmodule Bargad do
   And run:
 
   ```bash
-   $ mix deps.get
+  $ mix deps.get
   ```
 
   The docs can be found at [https://hexdocs.pm/bargad](https://hexdocs.pm/bargad).
@@ -119,29 +119,29 @@ defmodule Bargad do
   ## Note that here we are directly using Bargad.Log module for simplicity,
   ## it is recommended to use the Superwised LogClient and MapClient.
 
-    iex> tree =
+  iex> tree =
     ...> Bargad.Log.new("FRZ", :sha256, [{"module", "ETSBackend"}]) |>
-    ...> Bargad.Log.insert("3") |>
-    ...> Bargad.Log.insert("7")
-    iex> audit_proof = Bargad.Log.audit_proof(tree, 1)
-    %{
-      hash: <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117,
-        84, 98, 87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226,
-        120>>,
-      proof: [
-        {<<103, 6, 113, 205, 151, 64, 65, 86, 34, 110, 80, 121, 115, 242, 171, 131,
-          48, 211, 2, 44, 169, 110, 12, 147, 189, 189, 179, 32, 196, 26, 220,
-          175>>, "R"}
-      ],
-      value: "3"
-    }
-    iex(3)> Bargad.Log.verify_audit_proof(tree, audit_proof)
-    true
-    iex(2)> Bargad.Log.consistency_proof(tree, 1)
-    [
-      <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117, 84, 98,
-       87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226, 120>>
-    ]
+  ...> Bargad.Log.insert("3") |>
+  ...> Bargad.Log.insert("7")
+  iex> audit_proof = Bargad.Log.audit_proof(tree, 1)
+  %{
+    hash: <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117,
+    84, 98, 87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226,
+    120>>,
+    proof: [
+      {<<103, 6, 113, 205, 151, 64, 65, 86, 34, 110, 80, 121, 115, 242, 171, 131,
+        48, 211, 2, 44, 169, 110, 12, 147, 189, 189, 179, 32, 196, 26, 220,
+        175>>, "R"}
+    ],
+    value: "3"
+  }
+  iex(3)> Bargad.Log.verify_audit_proof(tree, audit_proof)
+  true
+  iex(2)> Bargad.Log.consistency_proof(tree, 1)
+  [
+    <<63, 219, 163, 95, 4, 220, 140, 70, 41, 134, 201, 146, 188, 248, 117, 84, 98,
+    87, 17, 48, 114, 169, 9, 193, 98, 247, 228, 112, 229, 129, 226, 120>>
+  ]
 
   ```
 

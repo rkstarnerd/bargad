@@ -99,10 +99,10 @@ defmodule Bargad.Utils do
   end
 
   def make_map_node(
-        tree,
-        left = %Bargad.Nodes.Node{treeId: _, hash: _, children: _, metadata: _, key: _, size: _},
-        right
-      ) do
+    tree,
+    left = %Bargad.Nodes.Node{treeId: _, hash: _, children: _, metadata: _, key: _, size: _},
+    right
+  ) do
     Bargad.Nodes.Node.new(
       treeId: tree.treeId,
       hash: Utils.make_hash(tree, left.hash <> right.hash),

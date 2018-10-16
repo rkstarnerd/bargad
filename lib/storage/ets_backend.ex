@@ -13,45 +13,45 @@
 # limitations under the License.
 
 defmodule ETSBackend do
-    @moduledoc """
-    Implementation of `Storage` behaviour which is backed by `:ets`.
-    """
-    @behaviour Storage
+  @moduledoc """
+  Implementation of `Storage` behaviour which is backed by `:ets`.
+  """
+  @behaviour Storage
 
   alias Bargad.Utils
 
-    @doc """
-    Initializes the `:ets`.
+  @doc """
+  Initializes the `:ets`.
 
-    Creates a new table in the form of `treeId_nodes` and stores this information in the `backend` field of the tree.
-    """
-    def init_backend(tree) do
-        nodes_table = String.to_atom("nodes" <> "_" <> tree.treeId)
-        :ets.new(nodes_table, [:set, :public, :named_table])
-        backend = tree.backend ++ [{"nodes_table", Atom.to_string(nodes_table)}]
-        Map.put(tree, :backend, backend)
-    end
+  Creates a new table in the form of `treeId_nodes` and stores this information in the `backend` field of the tree.
+  """
+  def init_backend(tree) do
+    nodes_table = String.to_atom("nodes" <> "_" <> tree.treeId)
+    :ets.new(nodes_table, [:set, :public, :named_table])
+    backend = tree.backend ++ [{"nodes_table", Atom.to_string(nodes_table)}]
+    Map.put(tree, :backend, backend)
+  end
 
-    @doc """
-    Retrieves a node with the specified key from `:ets`.
-    """
-    def get_node(backend, key) do
-       backend = Utils.tuple_list_to_map(backend)
-       [{_, value}]  = :ets.lookup(String.to_existing_atom(backend["nodes_table"]), key)
-       value
-    end
+  @doc """
+  Retrieves a node with the specified key from `:ets`.
+  """
+  def get_node(backend, key) do
+    backend = Utils.tuple_list_to_map(backend)
+    [{_, value}]  = :ets.lookup(String.to_existing_atom(backend["nodes_table"]), key)
+    value
+  end
 
-    def delete_node(backend, key) do
-        backend = Utils.tuple_list_to_map(backend)
-        :ets.delete(String.to_existing_atom(backend["nodes_table"]), key)
-     end
+  def delete_node(backend, key) do
+    backend = Utils.tuple_list_to_map(backend)
+    :ets.delete(String.to_existing_atom(backend["nodes_table"]), key)
+  end
 
-    @doc """
-    Persists a node in `:ets` with the specified key, value.
-    """
-    def set_node(backend, key, value) do
-        backend = Utils.tuple_list_to_map(backend)
-        :ets.insert_new(String.to_existing_atom(backend["nodes_table"]), {key, value})
-    end
+  @doc """
+  Persists a node in `:ets` with the specified key, value.
+  """
+  def set_node(backend, key, value) do
+    backend = Utils.tuple_list_to_map(backend)
+    :ets.insert_new(String.to_existing_atom(backend["nodes_table"]), {key, value})
+  end
 
 end

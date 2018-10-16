@@ -74,9 +74,9 @@ defmodule Bargad.Merkle do
     if m > tree.size || m <= 0 do
       raise "value not in range"
     else
-    root = Utils.get_node(tree, tree.root)
-    [{value, hash} | proof] = tree |> do_audit_proof(nil, nil, root, m) |> Enum.reverse
-    %{value: value, hash: hash, proof: proof}
+      root = Utils.get_node(tree, tree.root)
+      [{value, hash} | proof] = tree |> do_audit_proof(nil, nil, root, m) |> Enum.reverse
+      %{value: value, hash: hash, proof: proof}
     end
   end
 
@@ -145,8 +145,8 @@ defmodule Bargad.Merkle do
     case m do
       0 -> [hash]
       _ -> l = :math.ceil(:math.log2(size))
-      t = trunc(:math.log2(m))
-      [hash | do_consistency_proof(tree, nil, sibling, {l, t, m, size})]
+        t = trunc(:math.log2(m))
+        [hash | do_consistency_proof(tree, nil, sibling, {l, t, m, size})]
     end
   end
 
@@ -207,15 +207,15 @@ defmodule Bargad.Merkle do
 
       if tree.size > 1, do: Utils.delete_node(tree, root.hash)
       Utils.make_node(tree, root, right)
-    else
-      [left, right] = root.children
-      left = Utils.get_node(tree, left)
-      right = Utils.get_node(tree, right)
-      boolean = left.size < :math.pow(2, l - 1)
-      {left, right} = get_left_and_right_nodes(boolean, tree, root, left, right, x, l)
+      else
+        [left, right] = root.children
+        left = Utils.get_node(tree, left)
+        right = Utils.get_node(tree, right)
+        boolean = left.size < :math.pow(2, l - 1)
+        {left, right} = get_left_and_right_nodes(boolean, tree, root, left, right, x, l)
 
-      Utils.delete_node(tree, root.hash)
-      Utils.make_node(tree, left, right)
+        Utils.delete_node(tree, root.hash)
+        Utils.make_node(tree, left, right)
     end
   end
 

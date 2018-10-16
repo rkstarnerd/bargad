@@ -14,59 +14,59 @@
 
 defmodule Bargad.MapClient do
 
-    @moduledoc """
-    Client APIs for `Bargad.Map`. This module is automatically started on application start.
+  @moduledoc """
+  Client APIs for `Bargad.Map`. This module is automatically started on application start.
 
-    The request in each API has to be of the form `t:request/0`.
-    Look into the corresponding handler of each request for the exact arguments to be supplied.
-    """
+  The request in each API has to be of the form `t:request/0`.
+  Look into the corresponding handler of each request for the exact arguments to be supplied.
+  """
 
-    use GenServer
+  use GenServer
 
-    ## Client API
+  ## Client API
 
-    @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | boolean
+  @type response :: Bargad.Types.tree | Bargad.Types.audit_proof | boolean
 
-    @type request :: tuple
+  @type request :: tuple
 
-    @doc """
-    Starts the `Bargad.MapClient`.
+  @doc """
+  Starts the `Bargad.MapClient`.
 
-    Provides an API layer for operations on `Bargad.Map`.
-    """
-    def start_link(opts) do
-      GenServer.start_link(__MODULE__, :ok, opts)
-    end
+  Provides an API layer for operations on `Bargad.Map`.
+  """
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, :ok, opts)
+  end
 
-    @spec new(request) :: Bargad.Types.tree
-    def new(args) do
-        GenServer.call(Bargad.MapClient, {:new, args})
-    end
+  @spec new(request) :: Bargad.Types.tree
+  def new(args) do
+    GenServer.call(Bargad.MapClient, {:new, args})
+  end
 
-    def set(args) do
-        GenServer.call(Bargad.MapClient, {:set, args})
-    end
+  def set(args) do
+    GenServer.call(Bargad.MapClient, {:set, args})
+  end
 
-    def get(args) do
-        GenServer.call(Bargad.MapClient, {:get, args})
-    end
+  def get(args) do
+    GenServer.call(Bargad.MapClient, {:get, args})
+  end
 
-    def verify_inclusion_proof(args) do
-        GenServer.call(Bargad.MapClient, {:verify_inclusion_proof, args})
-    end
+  def verify_inclusion_proof(args) do
+    GenServer.call(Bargad.MapClient, {:verify_inclusion_proof, args})
+  end
 
-    ## Server Callbacks
+  ## Server Callbacks
 
-    @doc false
-    def init(:ok) do
-      {:ok, %{}}
-    end
+  @doc false
+  def init(:ok) do
+    {:ok, %{}}
+  end
 
-    @doc false
-    def handle_call({operation, args}, _from, state) do
-        args = Tuple.to_list(args)
-        result = apply(Bargad.Map, operation, args)
-        {:reply, result, state}
-    end
+  @doc false
+  def handle_call({operation, args}, _from, state) do
+    args = Tuple.to_list(args)
+    result = apply(Bargad.Map, operation, args)
+    {:reply, result, state}
+  end
 
 end
